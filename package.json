@@ -1,0 +1,25 @@
+{
+    "name": "game_back_end",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sluhtala/game_back_end.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/sluhtala/game_back_end/issues"
+    },
+    "homepage": "https://github.com/sluhtala/game_back_end#readme",
+    "dependencies": {
+        "express": "^4.17.1",
+	"socket.io":"^4.0.0"
+    }
+}

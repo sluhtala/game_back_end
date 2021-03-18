@@ -1,0 +1,4 @@
+start_mysql.sh
+backup
+game_app2
+game_app/node_modules

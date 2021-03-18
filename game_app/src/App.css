@@ -1,106 +1,128 @@
 :root {
-	--button-color-1: #feffc6;
-	--button-color-2: #c6c794;
+    --button-color-1: #feffc6;
+    --button-color-2: #c6c794;
 }
 
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .App {
-	text-align: center;
+    text-align: center;
 }
 
 .main-content {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .welcome-buttons {
-	align-self: center;
-	width: 50%;
+    align-self: center;
+    width: 50%;
 }
 
 .button {
-	width: 100%;
-	margin: 5px 0 5px 0;
-	padding: 5px 0 5px 0;
-	background-color: var(--button-color-1);
-	border: solid black 1px;
+    width: 100%;
+    margin: 5px 0 5px 0;
+    padding: 5px 0 5px 0;
+    background-color: var(--button-color-1);
+    border: solid black 1px;
 }
 .button:hover {
-	cursor: pointer;
-	background-color: var(--button-color-2);
+    cursor: pointer;
+    background-color: var(--button-color-2);
 }
 
 .login-content {
-	width: 90%;
-	align-self: center;
-	border: solid black 1px;
-	margin: 30px;
-	padding: 20px;
-	background-color: lightgray;
+    width: 90%;
+    border: solid black 1px;
+    margin: 30px;
+    padding: 20px;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.login-content a {
+    display: block;
+    font-size: 0.8rem;
+    margin: 0.2rem 0 0 0;
 }
 
 .login-content h3 {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 .login-form input {
-	width: 20rem;
+    width: 20rem;
+    outline: none;
+}
+
+.login-form input:focus {
+    border: 1px black solid;
 }
 
 .login-form p {
-	margin: 15px 0 5px 0;
+    margin: 15px 0 5px 0;
 }
 
 .submit-button {
-	background-color: lightgreen;
-	border-radius: 10px;
-	font-size: 1rem;
-	margin-top: 2rem;
+    background-color: lightgreen;
+    border-radius: 10px;
+    font-size: 1rem;
+    margin-top: 2rem;
+    width: 10rem;
 }
 
 .submit-button:hover {
-	background-color: green;
+    background-color: green;
 }
+
 .cancel-button {
-	background-color: brown;
-	color: white;
-	width: auto;
-	margin: 0 30% 0 30%;
+    background-color: brown;
+    color: white;
+    margin: 1rem 0 0 0;
+    width: 10rem;
 }
 
 .cancel-button:hover {
-	background-color: rgb(119, 30, 30);
+    background-color: rgb(119, 30, 30);
 }
 
 .login-form__input {
-	position: relative;
+    position: relative;
 }
+
 .login-form__input input {
-	text-align: center;
-	font-size: 1rem;
-	background-color: white;
-	border-radius: 10px;
-	border: none;
-	height: 1.8rem;
-	width: 20rem;
+    text-align: center;
+    font-size: 1rem;
+    background-color: white;
+    border-radius: 10px;
+    border: none;
+    height: 1.8rem;
+    width: 20rem;
 }
+
 .login-form__input p {
-	font-size: 0.8rem;
+    font-size: 0.8rem;
 }
 .login-form__input input:focus {
-	text-align: center;
+    text-align: center;
 }
 
 .warning-text {
-	background-color: crimson;
-	align-self: center;
-	margin: 30px;
-	border-radius: 5px;
-	height: 5rem;
-	color: white;
+    z-index: 1;
+    position: absolute;
+    bottom: 20rem;
+    background-color: crimson;
+    border-radius: 5px;
+    width: 100% !important;
+    color: white;
+    width: auto;
 }
