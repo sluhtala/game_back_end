@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import FormInput from "./formInput";
 import Requests from "./requests";
+import Cookies from "../cookie_handle";
 
 function LoginSystem(props) {
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
     const [validLogin, setValidLogin] = useState(true);
     const [warning, setWarning] = useState("");
+    useEffect(() => {
+        let cookie_user = Cookies.getCookie("login-username");
+        if (cookie_user !== "") {
+            setUser(cookie_user);
+        }
+    }, []);
     useEffect(() => {
         if (validLogin === false) setWarning("Invalid login.");
     }, [validLogin]);
@@ -29,6 +36,7 @@ function LoginSystem(props) {
                 sessionStorage.setItem("randomId", val.randomId);
                 data.randomId = val.randomId;
                 data.status = val.status;
+                Cookies.setCookie("login-username", data.username, 14);
                 Requests.createFetchRequest(
                     "POST",
                     "/login",

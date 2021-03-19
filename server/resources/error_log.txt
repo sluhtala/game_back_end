@@ -1,0 +1,6 @@
+#ERROR LOG
+
+{"code":"ER_BAD_FIELD_ERROR","errno":1054,"sqlState":"42S22","sqlMessage":"Unknown column 'undefined' in 'where clause'"}
+{"code":"ER_BAD_FIELD_ERROR","errno":1054,"sqlState":"42S22","sqlMessage":"Unknown column 'undefined' in 'where clause'"}
+{"code":"ER_BAD_FIELD_ERROR","errno":1054,"sqlState":"42S22","sqlMessage":"Unknown column 'hemuli' in 'where clause'"}
+{"code":"ER_BAD_FIELD_ERROR","errno":1054,"sqlState":"42S22","sqlMessage":"Unknown column 'c1d76b389242964a' in 'field list'"}

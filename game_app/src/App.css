@@ -126,3 +126,11 @@
     color: white;
     width: auto;
 }
+
+.form-warning {
+    position: relative;
+    bottom: auto;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
