@@ -8,7 +8,9 @@ Usage:
 
 3. create database by running (node ./server/init_database.js)
 
-4. start server npm start
+4. create frontend build (npm run build --prefix game_app/)
+
+5. start server npm start
 
 
 Features:
