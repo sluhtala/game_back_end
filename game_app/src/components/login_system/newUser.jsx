@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import FormInput, { FormInputRef } from "./formInput.jsx";
 import Requests from "./requests";
 import { validateForm } from "./validateForm.js";
-//document.getElementById("").shadowRoot.lastChild.
+import NewUserForm from "./newUserForm";
 
 function isNameAvailable(newName, setNameAvailable) {
     //xhtmlRequest;
@@ -18,7 +17,6 @@ function isNameAvailable(newName, setNameAvailable) {
 }
 function NewUser(props) {
     let [userVal, setUserVal] = useState("");
-    let userRef = useRef(null);
     let [emailVal, setEmailVal] = useState("");
     let [passwordVal, setPasswordVal] = useState("");
     let [confirmPasswordVal, setConfirmPasswordVal] = useState("");
@@ -26,8 +24,9 @@ function NewUser(props) {
     let [nameWarning, setNameWarning] = useState("");
     let [validForm, setValidForm] = useState(true);
     let [formWarning, setFormWarning] = useState("");
+    let userRef = useRef(null);
 
-    function changeHandle(event) {
+    function handleChange(event) {
         if (event.target.name === "Username") {
             setUserVal(event.target.value);
             isNameAvailable(event.target.value, (value) => {
@@ -88,46 +87,18 @@ function NewUser(props) {
             ) : (
                 ""
             )}
-            <form className="login-form" onFocus={() => setValidForm(true)}>
-                <FormInputRef
-                    ref={userRef}
-                    label="Username"
-                    value={userVal}
-                    onFocus={() => setNameAvailable(true)}
-                    onChange={(event) => changeHandle(event)}
-                    placeholder="Username"
-                />
-                <FormInput
-                    label="Email"
-                    value={emailVal}
-                    onChange={(event) => changeHandle(event)}
-                    placeholder="email@email.com"
-                />
-                <FormInput
-                    label="Password"
-                    value={passwordVal}
-                    onChange={(event) => changeHandle(event)}
-                    placeholder="password123!@#$"
-                    type="password"
-                />
-                <FormInput
-                    label="Confirm password"
-                    value={confirmPasswordVal}
-                    onChange={(event) => changeHandle(event)}
-                    placeholder=""
-                    type="password"
-                />
-                <input
-                    className="button submit-button"
-                    name="submit"
-                    type="button"
-                    value="Create New User"
-                    onClick={() => {
-                        handleSubmit();
-                    }}
-                    disabled={nameAvailable === false ? true : false}
-                />
-            </form>
+            <NewUserForm
+                ref={userRef}
+                userVal={userVal}
+                emailVal={emailVal}
+                passwordVal={passwordVal}
+                confirmPasswordVal={confirmPasswordVal}
+                setNameAvailable={setNameAvailable}
+                setValidForm={setValidForm}
+                handleSubmit={handleSubmit}
+                changeHandle={handleChange}
+                nameAvailable={nameAvailable}
+            />
             {validForm === false ? (
                 <div
                     className="warning-text form-warning"

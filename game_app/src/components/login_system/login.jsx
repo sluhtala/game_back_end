@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import FormInput from "./formInput";
 import Requests from "./requests";
 import Cookies from "../cookie_handle";
+import LoginForm from "./loginForm";
 
 function LoginSystem(props) {
     const [user, setUser] = useState("");
@@ -76,30 +76,13 @@ function LoginSystem(props) {
                 ""
             )}
             <h3>Login</h3>
-            <form className="login-form">
-                <FormInput
-                    label="Username"
-                    placeholder="Your username"
-                    value={user}
-                    onChange={(event) => handleChange(event)}
-                    onFocus={() => setValidLogin(true)}
-                />
-                <FormInput
-                    type="password"
-                    label="Password"
-                    placeholder="Your password"
-                    value={password}
-                    onChange={(event) => handleChange(event)}
-                />
-                <a href="/resetPassword">Forgot password?</a>
-                <input
-                    className="button submit-button"
-                    onClick={() => handleSubmit()}
-                    name="submit"
-                    type="button"
-                    value="Login"
-                />
-            </form>
+            <LoginForm
+                password={password}
+                user={user}
+                handleSubmit={handleSubmit}
+                handleChange={handleChange}
+                setValidLogin={setValidLogin}
+            />
             <div
                 role="button"
                 className="button cancel-button"
