@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { make_sql_query } = require("./databaseHandle");
+const { new_query } = require("./databaseHandle");
 const app = express();
 const {
     compare_passwords,
@@ -53,7 +53,12 @@ app.post("/logout", (req, res) => {
     logout_update(req.body.username);
     res.redirect(301, "/");
 });
-const { check_name, validate_form, new_user } = require("./new_user.js");
+const {
+    check_name,
+    validate_form,
+    new_user,
+    confirm_user,
+} = require("./new_user.js");
 app.post("/nameCheck", (req, res) => {
     let username = req.body.username;
     check_name(username).then((result) => {
@@ -69,9 +74,11 @@ app.post("/newUser", (req, res) => {
         return;
     } else {
         new_user(req.body)
-            .then(() => {
-                console.log("new_user created");
-                let data = { isValid: true };
+            .then((ret) => {
+                let data = {};
+                if (ret == true) {
+                    data.isValid = true;
+                } else data.isValid = false;
                 res.send(JSON.stringify(data));
             })
             .catch((e) => {
@@ -80,6 +87,37 @@ app.post("/newUser", (req, res) => {
             });
     }
 });
+
+const crypto = require("crypto");
+const { send } = require("process");
+app.get("/confirmUser", (req, res) => {
+    if (!req.query || !req.query.hash || !req.query.user) {
+        res.sendStatus(404);
+        console.log("error confirming user");
+    } else {
+        confirm_user(req.query)
+            .then((result) => {
+                if (result.ok) {
+                    res.sendFile(__dirname + "/public/register_success.html");
+                }
+            })
+            .catch((e) => {
+                console.error(e);
+                res.sendStatus(501);
+                res.send("error");
+            });
+    }
+});
+
+app.get("/resetPassword", (req, res) => {
+    if (!req.query.user || !req.query.newpassword) {
+        console.log("hello");
+    }
+    res.send("hello");
+});
+
+app.post("/resetPasswordEmail", (req, res) => {});
+//let decrypted = unhash_password(qresult[0].password);
 
 app.listen(PORT, () => {
     console.log(`listening on ${PORT}`);

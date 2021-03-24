@@ -25,7 +25,7 @@ connection.query("USE game_db", (error) => {
 });
 
 const create_users_table =
-    "CREATE TABLE users(id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, email VARCHAR(255), password VARCHAR(255) NOT NULL, status ENUM('online','offline','sleep') NOT NULL, randomId VARCHAR(128));";
+    "CREATE TABLE users(id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, email VARCHAR(255), password VARCHAR(255) NOT NULL, status ENUM('online','offline','sleep', 'disabled') NOT NULL, randomId VARCHAR(128));";
 connection.query(create_users_table, (error, result) => {
     if (error) console.log(error);
     console.log("Table users created");

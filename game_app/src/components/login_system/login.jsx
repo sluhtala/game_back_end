@@ -82,12 +82,15 @@ function LoginSystem(props) {
                 handleSubmit={handleSubmit}
                 handleChange={handleChange}
                 setValidLogin={setValidLogin}
+                setFormStatus={(status) => {
+                    props.setFormStatus(status);
+                }}
             />
             <div
                 role="button"
                 className="button cancel-button"
                 href="#"
-                onClick={props.setFormStatus}>
+                onClick={() => props.setFormStatus("welcome")}>
                 Cancel
             </div>
         </div>

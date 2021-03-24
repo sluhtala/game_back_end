@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
-function unhash_password(hash) {
+function decrypt_password(hash) {
     const encryptdata = JSON.parse(
         fs.readFileSync("resources/encrypt_key.json")
     );
@@ -19,6 +19,11 @@ function unhash_password(hash) {
 }
 
 function hash_password(password) {
+    let hash = crypto.createHash("sha256");
+    hash.update(password);
+    return hash.digest("hex");
+}
+function encrypt_password(password) {
     const encryptdata = JSON.parse(
         fs.readFileSync("resources/encrypt_key.json")
     );
@@ -32,5 +37,4 @@ function hash_password(password) {
     return iv.toString("hex") + ":" + encrypted.toString("hex");
 }
 
-exports.unhash_password = unhash_password;
 exports.hash_password = hash_password;

@@ -11,7 +11,6 @@ function isNameAvailable(newName, setNameAvailable) {
     Requests.createXMLRequest(data, "/nameCheck", (value) => {
         if (value.result === true) setNameAvailable(true);
         else if (value.result === false) setNameAvailable(false);
-        console.log(value);
         return res;
     });
 }
@@ -66,7 +65,20 @@ function NewUser(props) {
             "POST",
             "/newUser",
             inputs,
-            (response) => {},
+            (response) => {
+                console.log(response);
+                response.json().then((body) => {
+                    if (body.isValid === true) {
+                        props.setNewUserCreated(
+                            "New user created. Check your inbox."
+                        );
+                        props.setFormStatus();
+                    } else {
+                        setValidForm(false);
+                        setFormWarning("Username or email already in use.");
+                    }
+                });
+            },
             (e) => {
                 console.log(e);
             }

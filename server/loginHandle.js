@@ -1,4 +1,4 @@
-const { unhash_password } = require("./encryption");
+const { unhash_password, hash_password } = require("./encryption");
 const { new_query } = require("./databaseHandle");
 const crypto = require("crypto");
 const { rejects } = require("assert");
@@ -42,9 +42,9 @@ function compare_passwords(user, password) {
                     console.log("invalid username");
                     resolve(2);
                 }
-                let decrypted = unhash_password(qresult[0].password);
-                pw = decrypted;
-                if (decrypted !== password) resolve(2);
+                let attempt = hash_password(password);
+                let stored = qresult[0].password;
+                if (attempt !== stored) resolve(2);
                 else resolve(1);
             })
             .catch((err) => rejects(err));
