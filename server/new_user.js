@@ -14,7 +14,7 @@ function validate_form(form) {
     return true;
 }
 
-async function new_user(user) {
+async function new_user(user, hostname) {
     let encrypted = hash_password(user.password);
     const validatesql = `SELECT username FROM users where username='${user.username}' OR email='${user.email}';`;
     const sql = `INSERT INTO users (username, email, password, status) VALUES('${user.username}','${user.email}','${encrypted}', 'disabled');`;
@@ -23,7 +23,7 @@ async function new_user(user) {
         if (result.length > 0) return false;
         else {
             let res = await new_query(sql);
-            send_confirm_email(user.email, user, res.insertId);
+            send_confirm_email(hostname, user.email, user, res.insertId);
             //await new_query("delete from users where id>=29;"); // just testing stuff
             return true;
         }
@@ -61,14 +61,55 @@ async function check_name(name) {
         result = await new_query(
             `SELECT username FROM users WHERE username='${name}'`
         );
-    } catch {
-        (e) => console.error(e);
+    } catch (e) {
+        console.error(e);
     }
     if (result.length > 0) res = true;
     return res;
+}
+
+async function find_user_with_email(email) {
+    let sql = `SELECT username, id, lastLogin FROM users WHERE email='${email}';`;
+    let result;
+    try {
+        result = await new_query(sql);
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+    if (result.length === 0) return null;
+    else return result[0];
+}
+
+async function reset_password(body) {
+    let sql = `SELECT username, id, lastLogin FROM users WHERE username='${body.user}'`;
+    let result;
+    try {
+        result = await new_query(sql);
+        console.log(result);
+    } catch (e) {
+        console.error(e);
+        return { error: "sql error" };
+    }
+    let hash = crypto.createHash("sha1");
+    hash.update(`${result[0].id}${body.user}${result[0].lastLogin}`);
+    let new_key = hash.digest("hex");
+    console.log(new_key);
+    if (new_key !== body.key) return { error: "key" };
+    let new_hashed = hash_password(body.newPassword);
+    let updatepw_sql = `UPDATE users SET password='${new_hashed}' WHERE username='${body.user}'`;
+    try {
+        await new_query(updatepw_sql);
+    } catch (e) {
+        console.error(e);
+        return { error: "sql error" };
+    }
+    return { ok: true };
 }
 
 exports.check_name = check_name;
 exports.new_user = new_user;
 exports.validate_form = validate_form;
 exports.confirm_user = confirm_user;
+exports.reset_password = reset_password;
+exports.find_user_with_email = find_user_with_email;

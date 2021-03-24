@@ -8,6 +8,14 @@ const {
     login_update,
     logout_update,
 } = require("./loginHandle");
+const {
+    check_name,
+    validate_form,
+    new_user,
+    confirm_user,
+    find_user_with_email,
+    reset_password,
+} = require("./new_user.js");
 
 const PORT = process.env.PORT || 3001;
 
@@ -53,12 +61,6 @@ app.post("/logout", (req, res) => {
     logout_update(req.body.username);
     res.redirect(301, "/");
 });
-const {
-    check_name,
-    validate_form,
-    new_user,
-    confirm_user,
-} = require("./new_user.js");
 app.post("/nameCheck", (req, res) => {
     let username = req.body.username;
     check_name(username).then((result) => {
@@ -73,7 +75,7 @@ app.post("/newUser", (req, res) => {
         res.send(JSON.stringify({ isValid: false }));
         return;
     } else {
-        new_user(req.body)
+        new_user(req.body, req.hostname + ":" + PORT)
             .then((ret) => {
                 let data = {};
                 if (ret == true) {
@@ -90,6 +92,7 @@ app.post("/newUser", (req, res) => {
 
 const crypto = require("crypto");
 const { send } = require("process");
+const { send_resetPassword_email } = require("./email_handler");
 app.get("/confirmUser", (req, res) => {
     if (!req.query || !req.query.hash || !req.query.user) {
         res.sendStatus(404);
@@ -109,15 +112,61 @@ app.get("/confirmUser", (req, res) => {
     }
 });
 
-app.get("/resetPassword", (req, res) => {
-    if (!req.query.user || !req.query.newpassword) {
-        console.log("hello");
-    }
-    res.send("hello");
+app.post("/resetPassword", (req, res) => {
+    console.log(req.body);
+    //req.body.user req.body.password
+
+    // set new password in db
+    // redir to home
+    reset_password(req.body).then((result) => {
+        if (result.ok) {
+            res.redirect("/");
+            console.log("ok");
+        } else {
+            res.send({ error: result });
+            console.log("error");
+        }
+    });
 });
 
-app.post("/resetPasswordEmail", (req, res) => {});
-//let decrypted = unhash_password(qresult[0].password);
+app.get("/resetPasswordForm", (req, res) => {
+    //localhost:3001?user=malmana&key:234234
+    //check valid key
+    if (!req.query.user || !req.query.key) {
+        res.sendStatus(404);
+    } else {
+        //resetpassword
+        res.sendFile(__dirname + "/public/build_slink/reset_password.html");
+    }
+});
+
+app.post("/resetPasswordEmail", (req, res) => {
+    const epattern = /^[.\w-]+@[\w-]+\.[\w-]{2,}$/;
+    //check valid email format
+    if (!req.body.email || !epattern.test(req.body.email)) {
+        res.send({ error: "email" });
+        return;
+    }
+    find_user_with_email(req.body.email).then((result) => {
+        if (!result) {
+            res.sendStatus(501);
+            return;
+        }
+        console.log(result);
+        if (!result.username) {
+            res.send({ error: "user" });
+            return;
+        }
+        let ok = send_resetPassword_email(
+            req.hostname + ":" + PORT,
+            req.body.email,
+            result.username,
+            result.id,
+            result.lastLogin
+        );
+        if (ok) res.send({ ok: true });
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`listening on ${PORT}`);

@@ -12,6 +12,11 @@ const multipleEntry = require("react-app-rewire-multiple-entry")([
         template: "public/index.html",
         outPath: "/game.html",
     },
+    {
+        entry: "src/reset_passwordForm.js",
+        template: "public/index.html",
+        outPath: "/reset_password.html",
+    },
 ]);
 
 module.exports = {
