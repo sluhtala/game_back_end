@@ -4,6 +4,7 @@ import LoginSystem from "./components/login_system/login.jsx";
 import WelcomePage from "./components/login_system/welcome.jsx";
 import NewUser from "./components/login_system/newUser";
 import ResetPassword from "./components/login_system/resetPassword";
+import PopupMessage from "./components/popup";
 
 function App() {
     let [newuserCreated, setNewUserCreated] = useState("");
@@ -49,7 +50,7 @@ function App() {
             );
         }
     }, [status]);
-
+    /*
     useEffect(() => {
         if (newuserCreated === "") return;
         let popup = newuserRef.current;
@@ -59,12 +60,14 @@ function App() {
             popup.classList.toggle("popup-active");
         }, 3000);
     }, [newuserCreated]);
-
+	*/
     return (
         <div className="App">
-            <div ref={newuserRef} className="new-user-popup">
-                {newuserCreated !== "" ? <h3>{newuserCreated}</h3> : ""}
-            </div>
+            <PopupMessage
+                popUpText={newuserCreated}
+                time={3000}
+                setPopUpText={setNewUserCreated}
+            />
             <h1>Hello, welcome to the login page.</h1>
             <div className="main-content">{content}</div>
         </div>

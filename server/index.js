@@ -15,6 +15,7 @@ const {
     confirm_user,
     find_user_with_email,
     reset_password,
+    delete_user,
 } = require("./new_user.js");
 
 const PORT = process.env.PORT || 3001;
@@ -23,8 +24,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public/build_slink/"));
 
-app.get("/hello", (req, res) => {
-    res.send({ message: "connected" });
+app.get("/", (req, res) => {
+    console.log("home");
+    res.sendFile(__dirname + "/public/build_slink/index.html");
 });
 
 app.get("/game", (req, res) => {
@@ -34,8 +36,8 @@ app.get("/game", (req, res) => {
 app.post("/login", (req, res) => {
     if (req.body.status === 0) {
         console.log(req.body);
-        compare_passwords(req.body.username, req.body.password).then(
-            (result) => {
+        compare_passwords(req.body.username, req.body.password)
+            .then((result) => {
                 if (result === 2) {
                     //console.log("error invalid password");
                     res.send(JSON.stringify({ status: result }));
@@ -49,8 +51,8 @@ app.post("/login", (req, res) => {
                         );
                     });
                 }
-            }
-        );
+            })
+            .catch((e) => res.send(JSON.stringify({ status: 3 })));
     } else if (req.body.status === 1) {
         res.redirect(301, "/game");
     }
@@ -93,6 +95,7 @@ app.post("/newUser", (req, res) => {
 const crypto = require("crypto");
 const { send } = require("process");
 const { send_resetPassword_email } = require("./email_handler");
+const { request } = require("http");
 app.get("/confirmUser", (req, res) => {
     if (!req.query || !req.query.hash || !req.query.user) {
         res.sendStatus(404);
@@ -166,6 +169,18 @@ app.post("/resetPasswordEmail", (req, res) => {
         );
         if (ok) res.send({ ok: true });
     });
+});
+
+app.post("/deleteUser", (req, res) => {
+    const data = req.body;
+    delete_user(data)
+        .then((ok) => {
+            if (ok === true) res.send(JSON.stringify({ ok: true }));
+            else res.send(JSON.stringify({ error: true }));
+        })
+        .catch((e) => {
+            console.error(error);
+        });
 });
 
 app.listen(PORT, () => {

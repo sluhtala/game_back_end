@@ -18,17 +18,30 @@ const Requests = {
         callback,
         callbackError = null
     ) {
-        fetch(url, {
-            method: method,
-            headers: { "Content-Type": "Application/json" },
-            body: JSON.stringify(data),
-        })
-            .then((response) => {
-                callback(response);
+        if (method === "post" || method === "POST") {
+            fetch(url, {
+                method: method,
+                headers: { "Content-Type": "Application/json" },
+                body: JSON.stringify(data),
             })
-            .catch((err) => {
-                if (callbackError) callbackError(err);
-            });
+                .then((response) => {
+                    callback(response);
+                })
+                .catch((err) => {
+                    if (callbackError) callbackError(err);
+                });
+        }
+        if (method === "GET" || method === "get") {
+            fetch(url, {
+                method: method,
+            })
+                .then((response) => {
+                    callback(response);
+                })
+                .catch((err) => {
+                    if (callbackError) callbackError(err);
+                });
+        }
     },
 };
 export default Requests;

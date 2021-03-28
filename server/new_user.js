@@ -16,15 +16,19 @@ function validate_form(form) {
 
 async function new_user(user, hostname) {
     let encrypted = hash_password(user.password);
-    const validatesql = `SELECT username FROM users where username='${user.username}' OR email='${user.email}';`;
-    const sql = `INSERT INTO users (username, email, password, status) VALUES('${user.username}','${user.email}','${encrypted}', 'disabled');`;
+    const validatesql = `SELECT username FROM users where username=? OR email=?;`;
+    const sql = `INSERT INTO users (username, email, password, status) VALUES(?,?,?,?);`;
     try {
-        let result = await new_query(validatesql);
+        let result = await new_query(validatesql, [user.username, user.email]);
         if (result.length > 0) return false;
         else {
-            let res = await new_query(sql);
+            let res = await new_query(sql, [
+                user.username,
+                user.email,
+                encrypted,
+                "disabled",
+            ]);
             send_confirm_email(hostname, user.email, user, res.insertId);
-            //await new_query("delete from users where id>=29;"); // just testing stuff
             return true;
         }
     } catch (error) {
@@ -34,15 +38,15 @@ async function new_user(user, hostname) {
 }
 
 async function confirm_user(body) {
-    const sql = `SELECT id FROM users WHERE username='${body.user}'`;
-    const updatesql = `UPDATE users SET status='offline' WHERE username='${body.user}'`;
+    const sql = `SELECT id FROM users WHERE username=?`;
+    const updatesql = `UPDATE users SET status='offline' WHERE username=?`;
 
     try {
-        let urlcheck = await new_query(sql);
+        let urlcheck = await new_query(sql, [body.user]);
         let test = crypto.createHash("sha1");
         test.update(`${urlcheck[0].id}${body.user}`);
         if (test.digest("hex") === body.hash) {
-            await new_query(updatesql);
+            await new_query(updatesql, [body.user]);
             return { ok: true };
         }
     } catch (e) {
@@ -51,7 +55,14 @@ async function confirm_user(body) {
 }
 
 async function delete_user(user) {
-    const sql = `DELETE FROM users where username='${user.username}' AND randomId='${user.randomId}'`;
+    const sql = `DELETE FROM users where username=? AND randomId=?`;
+    try {
+        await new_query(sql, [user.username, user.randomId]);
+        return { ok: true };
+    } catch (e) {
+        console.error(e);
+        return { error: true };
+    }
 }
 
 async function check_name(name) {
@@ -59,7 +70,8 @@ async function check_name(name) {
     let result;
     try {
         result = await new_query(
-            `SELECT username FROM users WHERE username='${name}'`
+            `SELECT username FROM users WHERE username=?`,
+            [name]
         );
     } catch (e) {
         console.error(e);
@@ -113,3 +125,4 @@ exports.validate_form = validate_form;
 exports.confirm_user = confirm_user;
 exports.reset_password = reset_password;
 exports.find_user_with_email = find_user_with_email;
+exports.delete_user = delete_user;

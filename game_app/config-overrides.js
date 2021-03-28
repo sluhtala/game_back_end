@@ -9,7 +9,7 @@ const multipleEntry = require("react-app-rewire-multiple-entry")([
     },
     {
         entry: "src/game_entry.js",
-        template: "public/index.html",
+        template: "public/game.html",
         outPath: "/game.html",
     },
     {

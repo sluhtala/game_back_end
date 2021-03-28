@@ -1,12 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import GameComponent from "./components/game";
+import GameComponent from "./game_components/game";
 import reportWebVitals from "./reportWebVitals";
+import GameHeader from "./game_components/game_header";
+import "./App.css";
+import "./game.css";
 
 ReactDOM.render(
     <React.StrictMode>
-        <GameComponent />
+        <div className="main-content">
+            <GameHeader />
+            <GameComponent />
+        </div>
     </React.StrictMode>,
     document.getElementById("root")
 );

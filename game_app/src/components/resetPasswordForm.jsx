@@ -19,8 +19,6 @@ class ResetPasswordForm extends Component {
         else if (event.target.name === "Confirm New Password")
             newstate.confirmNewPassword = event.target.value;
         this.setState(newstate);
-        console.log(newstate);
-        console.log(this.state);
     };
     handleSubmit = () => {
         if (!this.state.newPassword) {
