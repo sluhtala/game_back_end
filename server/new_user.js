@@ -81,10 +81,10 @@ async function check_name(name) {
 }
 
 async function find_user_with_email(email) {
-    let sql = `SELECT username, id, lastLogin FROM users WHERE email='${email}';`;
+    let sql = `SELECT username, id, lastLogin FROM users WHERE email=?;`;
     let result;
     try {
-        result = await new_query(sql);
+        result = await new_query(sql, [email]);
     } catch (e) {
         console.error(e);
         return null;
@@ -94,10 +94,10 @@ async function find_user_with_email(email) {
 }
 
 async function reset_password(body) {
-    let sql = `SELECT username, id, lastLogin FROM users WHERE username='${body.user}'`;
+    let sql = `SELECT username, id, lastLogin FROM users WHERE username=?`;
     let result;
     try {
-        result = await new_query(sql);
+        result = await new_query(sql, [body.user]);
         console.log(result);
     } catch (e) {
         console.error(e);
@@ -109,9 +109,9 @@ async function reset_password(body) {
     console.log(new_key);
     if (new_key !== body.key) return { error: "key" };
     let new_hashed = hash_password(body.newPassword);
-    let updatepw_sql = `UPDATE users SET password='${new_hashed}' WHERE username='${body.user}'`;
+    let updatepw_sql = `UPDATE users SET password=? WHERE username=?`;
     try {
-        await new_query(updatepw_sql);
+        await new_query(updatepw_sql, [new_hashed, body.user]);
     } catch (e) {
         console.error(e);
         return { error: "sql error" };

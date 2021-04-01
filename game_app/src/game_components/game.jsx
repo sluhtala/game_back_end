@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../App.css";
 import Sketch from "./sketch.js";
+import { io } from "socket.io-client";
+const socket = io();
 
 function GameComponent(props) {
     const [gameEnable, setGameEnable] = useState(true);
@@ -8,6 +10,8 @@ function GameComponent(props) {
     const [sendingMessage, setSendginMessage] = useState("");
     const [sliderColor, setSliderColor] = useState([255, 0, 0]);
     const messageRef = useRef(null);
+
+    useEffect(() => {}, []);
 
     function handleChange(event) {
         if (event.target.name === "message") {
@@ -26,11 +30,11 @@ function GameComponent(props) {
             setSliderColor([sliderColor[0], sliderColor[1], b]);
         }
     }
-    function sendMessage(event) {
+    let sendMessage = (event) => {
         setSendginMessage(message);
         messageRef.current.blur();
         setGameEnable(true);
-    }
+    };
     useEffect(() => {
         console.log("enable: " + gameEnable);
     }, [gameEnable]);
@@ -51,6 +55,7 @@ function GameComponent(props) {
                         }
                     }}
                     color={sliderColor}
+                    socket={socket}
                 />
             </div>
             <span>Chat:</span>

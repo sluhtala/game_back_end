@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const http = require("http");
 const { new_query } = require("./databaseHandle");
 const app = express();
 const {
@@ -25,9 +26,13 @@ app.use(bodyParser.json());
 app.use(express.static("public/build_slink/"));
 
 app.get("/", (req, res) => {
-    console.log("home");
     res.sendFile(__dirname + "/public/build_slink/index.html");
 });
+
+const { GameServer } = require("./game_server.js");
+const server = http.createServer(app);
+GameServer.init(server);
+GameServer.serve();
 
 app.get("/game", (req, res) => {
     res.sendFile(__dirname + "/public/build_slink/game.html");
@@ -35,7 +40,6 @@ app.get("/game", (req, res) => {
 
 app.post("/login", (req, res) => {
     if (req.body.status === 0) {
-        console.log(req.body);
         compare_passwords(req.body.username, req.body.password)
             .then((result) => {
                 if (result === 2) {
@@ -116,7 +120,6 @@ app.get("/confirmUser", (req, res) => {
 });
 
 app.post("/resetPassword", (req, res) => {
-    console.log(req.body);
     //req.body.user req.body.password
 
     // set new password in db
@@ -124,7 +127,6 @@ app.post("/resetPassword", (req, res) => {
     reset_password(req.body).then((result) => {
         if (result.ok) {
             res.redirect("/");
-            console.log("ok");
         } else {
             res.send({ error: result });
             console.log("error");
@@ -155,7 +157,6 @@ app.post("/resetPasswordEmail", (req, res) => {
             res.sendStatus(501);
             return;
         }
-        console.log(result);
         if (!result.username) {
             res.send({ error: "user" });
             return;
@@ -183,6 +184,6 @@ app.post("/deleteUser", (req, res) => {
         });
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`listening on ${PORT}`);
 });
