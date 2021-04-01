@@ -1,4 +1,4 @@
-#game server readme
+![project image](./project_image.png)
 
 Important!
 	This project is only for educational purpose only.
@@ -20,6 +20,8 @@ Usage:
 
 Features:
 
+Login-system:
+
 - Create account
 - Dynamically checks if the username is already in use
 - Secure Password
@@ -28,7 +30,10 @@ Features:
 - Logout 
 - email system to confirm account and reset password
 
-
+Game:
+- w,a,s,d to move
+- change color
+- t to chat
 
 Todo:
 
