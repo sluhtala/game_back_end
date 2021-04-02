@@ -1,7 +1,7 @@
 ![project image](./project_image.png)
 
-Important!
-	This project is only for educational purpose only.
+**Important!**
+	This project is for educational purpose only.
 
 Usage:
 
