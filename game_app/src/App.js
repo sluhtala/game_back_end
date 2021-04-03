@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./App.css";
+import React, { useState, useEffect } from "react";
+import "./style/App.css";
 import LoginSystem from "./components/login_system/login.jsx";
 import WelcomePage from "./components/login_system/welcome.jsx";
 import NewUser from "./components/login_system/newUser";
@@ -8,7 +8,6 @@ import PopupMessage from "./components/popup";
 
 function App() {
     let [newuserCreated, setNewUserCreated] = useState("");
-    let newuserRef = useRef(null);
     let [status, setStatus] = useState("welcome");
     let [content, setContent] = useState(
         <WelcomePage

@@ -21,9 +21,12 @@ function LoginForm(props) {
                 value={props.password}
                 onChange={(event) => props.handleChange(event)}
             />
-            <a onClick={() => props.setFormStatus("resetPassword")} href="#">
+            <span
+                className="fake-link"
+                onClick={() => props.setFormStatus("resetPassword")}
+                href="none">
                 Forgot password?
-            </a>
+            </span>
             <input
                 className="button submit-button"
                 onClick={() => props.handleSubmit()}

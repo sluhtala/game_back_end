@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import "../App.css";
+import "../style/App.css";
 import Sketch from "./sketch.js";
 import { io } from "socket.io-client";
 const socket = io();

@@ -12,7 +12,11 @@ exports.create_randomId = function () {
 exports.login_update = async function (username, randomid) {
     try {
         await new_query(
-            `UPDATE users SET randomId='${randomid}', status='online', lastLogin=Now() WHERE username='${username}'`
+            `UPDATE users SET randomId='${randomid}', status='online', last_login=Now() WHERE username='${username}'`
+        );
+        await new_query(
+            `INSERT INTO connections (user, randomId) VALUES ((SELECT id FROM users WHERE username=?), ?)`,
+            [username, randomid]
         );
     } catch (e) {
         console.error(e);
@@ -27,6 +31,10 @@ exports.logout_update = async function (username) {
         await new_query(
             `UPDATE users SET status='offline' WHERE username='${username}'`
         );
+        await new_query(
+            `DELETE FROM connections WHERE user=(SELECT id FROM users WHERE username=?);`,
+            [username]
+        );
     } catch (e) {
         console.error(e);
     }
@@ -35,7 +43,7 @@ exports.logout_update = async function (username) {
 function compare_passwords(user, password) {
     return new Promise((resolve, rejects) => {
         new_query(
-            `SELECT username, password FROM users WHERE username='${user}'`
+            `SELECT username, password, status FROM users WHERE username='${user}'`
         )
             .then((qresult) => {
                 if (qresult.length == 0) {
@@ -45,7 +53,8 @@ function compare_passwords(user, password) {
                 let attempt = hash_password(password);
                 let stored = qresult[0].password;
                 if (attempt !== stored) resolve(2);
-                else resolve(1);
+                else if (qresult[0].status !== "disabled") resolve(1);
+                else resolve(4);
             })
             .catch((err) => rejects(err));
     });

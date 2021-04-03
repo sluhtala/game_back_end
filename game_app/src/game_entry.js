@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "./style/index.css";
 import GameComponent from "./game_components/game";
 import reportWebVitals from "./reportWebVitals";
 import GameHeader from "./game_components/game_header";
-import "./App.css";
-import "./game.css";
+import "./style/App.css";
+import "./style/game.css";
 
 ReactDOM.render(
     <React.StrictMode>

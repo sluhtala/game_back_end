@@ -29,12 +29,12 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/build_slink/index.html");
 });
 
-const { GameServer } = require("./game_server.js");
+const { GameServer, getListOfPlayers } = require("./game_server.js");
 const server = http.createServer(app);
 GameServer.init(server);
-GameServer.serve();
 
 app.get("/game", (req, res) => {
+    GameServer.serve();
     res.sendFile(__dirname + "/public/build_slink/game.html");
 });
 
@@ -42,7 +42,7 @@ app.post("/login", (req, res) => {
     if (req.body.status === 0) {
         compare_passwords(req.body.username, req.body.password)
             .then((result) => {
-                if (result === 2) {
+                if (result === 2 || result === 4 || result === 3) {
                     //console.log("error invalid password");
                     res.send(JSON.stringify({ status: result }));
                     return 1;
@@ -63,7 +63,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-    //console.log(req.body);
+    console.log(`${req.body.username} logged out.`);
     logout_update(req.body.username);
     res.redirect(301, "/");
 });
@@ -117,6 +117,12 @@ app.get("/confirmUser", (req, res) => {
                 res.send("error");
             });
     }
+});
+
+app.post("/changePassword", (req, res) => {
+    //check if username and password match
+    //sql for password change
+    //
 });
 
 app.post("/resetPassword", (req, res) => {
@@ -182,6 +188,11 @@ app.post("/deleteUser", (req, res) => {
         .catch((e) => {
             console.error(error);
         });
+});
+
+app.get("/currentlyPlaying", (req, res) => {
+    let list = getListOfPlayers();
+    res.send(list);
 });
 
 server.listen(PORT, () => {

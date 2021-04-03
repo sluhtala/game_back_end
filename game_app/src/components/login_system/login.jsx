@@ -14,13 +14,17 @@ function LoginSystem(props) {
             setUser(cookie_user);
         }
     }, []);
-    useEffect(() => {
-        if (validLogin === false) setWarning("Invalid login.");
-    }, [validLogin]);
     function handleSubmit() {
-        const STATUSES = { sending: 0, ok: 1, invalid_login: 2, error: 3 };
+        const STATUSES = {
+            sending: 0,
+            ok: 1,
+            invalid_login: 2,
+            error: 3,
+            disabled: 4,
+        };
         Object.freeze(STATUSES);
         if (user === "" || password === "") {
+            setWarning("Invalid login.");
             setValidLogin(false);
             return;
         }
@@ -52,7 +56,10 @@ function LoginSystem(props) {
                     }
                 );
             } else if (val.status === STATUSES.invalid_login) {
-                console.log("invalid login");
+                setWarning("Invalid login.");
+                setValidLogin(false);
+            } else if (val.status === STATUSES.disabled) {
+                setWarning("User disabled.");
                 setValidLogin(false);
             }
         });

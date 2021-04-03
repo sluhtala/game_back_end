@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import "../App.css";
+import "../style/App.css";
 
 function PopupMessage(props) {
     const popUpRef = useRef(null);

@@ -4,8 +4,6 @@ import Requests from "./requests";
 
 function ResetPassword(props) {
     let [email, setEmail] = useState("");
-    let [emailSent, setEmailSent] = useState(false);
-    let [validEmail, setValidEmail] = useState(false);
     let [formWarning, setFormWarning] = useState("");
     let [isValidForm, setIsValidForm] = useState(true);
 

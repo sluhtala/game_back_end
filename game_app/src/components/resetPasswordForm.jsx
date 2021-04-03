@@ -1,4 +1,4 @@
-import "../App.css";
+import "../style/App.css";
 
 import React, { Component } from "react";
 import LoginInput from "./login_system/formInput";

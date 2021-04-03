@@ -66,7 +66,6 @@ function NewUser(props) {
             "/newUser",
             inputs,
             (response) => {
-                console.log(response);
                 response.json().then((body) => {
                     if (body.isValid === true) {
                         props.setNewUserCreated(

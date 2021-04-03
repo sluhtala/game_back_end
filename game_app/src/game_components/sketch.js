@@ -32,7 +32,7 @@ class OtherPlayers {
         this.amount = this.players.length;
     }
     removePlayer(id) {
-        this.players.map((player, i) => {
+        this.players.foreach((player, i) => {
             if (player.id === id) {
                 this.players.splice(i, 1);
                 return;
@@ -262,7 +262,7 @@ class Sketch extends React.Component {
             console.log("player left");
         });
         this.props.socket.on("moveOtherPlayers", (data) => {
-            otherPlayers.players.map((player) => {
+            otherPlayers.players.foreach((player) => {
                 if (!player) return;
                 if (player.id === data.id) {
                     player.color = data.color;

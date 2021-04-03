@@ -7,6 +7,7 @@ const fs = require("fs");
 const file = fs.readFileSync("resources/mysql_init_db_opts.json");
 if (!file) console.log("Error: No opts mysq_init_db_opts.json file found");
 const opts = JSON.parse(file);
+opts.multipleStatements = true;
 
 const connection = mysql.createConnection(opts);
 
@@ -14,6 +15,41 @@ connection.connect((error) => {
     if (error) console.log(error.stack);
 });
 
+const create_db = "CREATE DATABASE game_db;USE game_db;";
+const create_users_table =
+    "CREATE TABLE users(id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255) NOT NULL, email VARCHAR(255), password VARCHAR(255) NOT NULL, status ENUM('online','offline','sleep', 'disabled') NOT NULL, randomId VARCHAR(128), last_login DATETIME);";
+const create_connections_table =
+    "CREATE TABLE connections(id INT AUTO_INCREMENT PRIMARY KEY, start_time DATETIME ON UPDATE CURRENT_TIMESTAMP, user INT, FOREIGN KEY(user) REFERENCES users(id));";
+const create_friends_table =
+    "CREATE TABLE friends(id INT AUTO_INCREMENT PRIMARY KEY, id_1 INT NOT NULL, id_2 INT NOT NULL, created DATETIME DEFAULT CURRENT_TIMESTAMP);";
+const create_mysql_user =
+    "CREATE USER 'client'@'" + opts.host + "' IDENTIFIED BY 'Game42PS!Client';";
+const user_privileges =
+    "GRANT INSERT, DELETE, SELECT, UPDATE ON game_db.* to 'client'@'" +
+    opts.host +
+    "';FLUSH PRIVILEGES;";
+
+connection.query(
+    create_db +
+        create_users_table +
+        create_connections_table +
+        create_friends_table +
+        create_mysql_user +
+        user_privileges,
+    (error, result) => {
+        if (error) console.log(error);
+        else {
+            console.log("Database game_db created");
+            console.log("Table users created.");
+            console.log("Table friends created.");
+            console.log("Mysql user created.");
+        }
+    }
+);
+
+connection.end();
+
+/*
 const create_db = "CREATE DATABASE game_db";
 connection.query(create_db, (error, result) => {
     if (error) console.log(error);
@@ -60,8 +96,9 @@ connection.query("FLUSH PRIVILEGES", (error, result) => {
 });
 
 connection.end();
-
-//Creates hashing key -file for password storage
+*/
+//Password uses hashing now. This for data encryption and decryption
+/*
 const crypto = require("crypto");
 const algorithm = "aes-256-ctr";
 const secret_key = crypto.randomBytes(32);
@@ -72,3 +109,4 @@ fs.writeFileSync(
         secret_key: secret_key,
     })
 );
+*/

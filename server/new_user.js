@@ -56,8 +56,10 @@ async function confirm_user(body) {
 
 async function delete_user(user) {
     const sql = `DELETE FROM users where username=? AND randomId=?`;
+    const delete_connections = `DELETE FROM connections WHERE user=(SELECT id FROM users WHERE username=?)`;
     try {
         await new_query(sql, [user.username, user.randomId]);
+        await new_query(delete_connections, [user.username]);
         return { ok: true };
     } catch (e) {
         console.error(e);

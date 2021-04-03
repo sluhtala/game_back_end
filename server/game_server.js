@@ -43,4 +43,10 @@ const GameServer = {
     },
 };
 
+function getListOfPlayers(gameName) {
+    console.log(allPlayers);
+    return allPlayers;
+}
+
 exports.GameServer = GameServer;
+exports.getListOfPlayers = getListOfPlayers;

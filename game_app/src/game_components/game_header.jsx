@@ -1,15 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import Requests from "../components/login_system/requests";
 import PopupMessage from "../components/popup";
+import ChangePasswordForm from "../components/changePasswordForm";
+import { Beforeunload } from "react-beforeunload";
 
 function GameHeader(props) {
     const [usernameLogged, setUsernameLogged] = useState(
         sessionStorage.getItem("username-logged")
     );
     const [popUpText, setPopUpText] = useState("");
-    const popUpRef = useRef(null);
+    const [changePasswordStatus, setChangePasswordStatus] = useState("");
 
     let logout = () => {
+        if (!usernameLogged) return;
         let data = { username: usernameLogged };
         fetch("/logout", {
             method: "POST",
@@ -20,6 +23,7 @@ function GameHeader(props) {
         }).then((response) => {
             sessionStorage.removeItem("username-logged");
             sessionStorage.removeItem("randomId");
+            setUsernameLogged("");
             if (response.redirected) window.location.href = response.url;
         });
     };
@@ -63,6 +67,23 @@ function GameHeader(props) {
         );
     };
 
+    let changePassword = () => {
+        setChangePasswordStatus("change");
+    };
+
+    useEffect(() => {
+        window.onunload = () => {
+            logout();
+        };
+    }, []);
+    useEffect(() => {
+        if (changePasswordStatus === "") return;
+        if (changePasswordStatus === "ok") {
+            setPopUpText("Password Changed");
+            setChangePasswordStatus("");
+        }
+    }, [changePasswordStatus]);
+
     return (
         <div className="game-header">
             <div className="game-header-element game-logo">
@@ -83,21 +104,34 @@ function GameHeader(props) {
                             onClick={() => {
                                 logout();
                             }}>
-                            <a>Logout</a>
+                            <span>Logout</span>
                         </li>
-                        <li>
-                            <a>Change Password</a>
+                        <li
+                            onClick={() => {
+                                changePassword();
+                            }}>
+                            <span>Change Password</span>
                         </li>
                         <li
                             onClick={() => {
                                 deleteAccount();
                             }}>
-                            <a>Delete Account</a>
+                            <span>Delete Account</span>
                         </li>
                     </ul>
                 </div>
             </div>
             <PopupMessage popUpText={popUpText} />
+            {changePasswordStatus === "change" ? (
+                <ChangePasswordForm
+                    username={sessionStorage.getItem("username-logged")}
+                    setStatus={(status) => {
+                        setChangePasswordStatus(status);
+                    }}
+                />
+            ) : (
+                ""
+            )}
         </div>
     );
 }
