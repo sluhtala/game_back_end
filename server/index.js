@@ -32,9 +32,9 @@ app.get("/", (req, res) => {
 const { GameServer, getListOfPlayers } = require("./game_server.js");
 const server = http.createServer(app);
 GameServer.init(server);
+GameServer.serve();
 
 app.get("/game", (req, res) => {
-    GameServer.serve();
     res.sendFile(__dirname + "/public/build_slink/game.html");
 });
 
@@ -63,8 +63,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-    console.log(`${req.body.username} logged out.`);
-    logout_update(req.body.username);
+    logout_update(req.body.username, req.body.randomId);
     res.redirect(301, "/");
 });
 app.post("/nameCheck", (req, res) => {

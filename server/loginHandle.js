@@ -12,7 +12,8 @@ exports.create_randomId = function () {
 exports.login_update = async function (username, randomid) {
     try {
         await new_query(
-            `UPDATE users SET randomId='${randomid}', status='online', last_login=Now() WHERE username='${username}'`
+            `UPDATE users SET randomId=?, status='online', last_login=Now() WHERE username=?`,
+            [randomid, username]
         );
         await new_query(
             `INSERT INTO connections (user, randomId) VALUES ((SELECT id FROM users WHERE username=?), ?)`,
@@ -23,18 +24,26 @@ exports.login_update = async function (username, randomid) {
     }
 };
 
-exports.logout_update = async function (username) {
+exports.logout_update = async function (username, randomid) {
     try {
         await new_query(
-            `UPDATE users SET randomId='' WHERE username='${username}'`
-        );
-        await new_query(
-            `UPDATE users SET status='offline' WHERE username='${username}'`
-        );
-        await new_query(
-            `DELETE FROM connections WHERE user=(SELECT id FROM users WHERE username=?);`,
+            `UPDATE users SET randomId='', status='offline' WHERE username=?`,
             [username]
         );
+        await new_query(
+            `DELETE FROM connections WHERE user=(SELECT id FROM users WHERE username=?) AND randomId=?;`,
+            [username, randomid]
+        );
+        let otherconnections = await new_query(
+            `SELECT id, randomId FROM connections WHERE user=((SELECT id FROM users WHERE username=?))`,
+            [username]
+        );
+        if (otherconnections.length > 0) {
+            await new_query(
+                `UPDATE users SET status='online' WHERE username=?`,
+                [username]
+            );
+        }
     } catch (e) {
         console.error(e);
     }

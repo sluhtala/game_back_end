@@ -8,12 +8,15 @@ function GameHeader(props) {
     const [usernameLogged, setUsernameLogged] = useState(
         sessionStorage.getItem("username-logged")
     );
+    const [randomId, setRandomId] = useState(
+        sessionStorage.getItem("randomId")
+    );
     const [popUpText, setPopUpText] = useState("");
     const [changePasswordStatus, setChangePasswordStatus] = useState("");
 
     let logout = () => {
         if (!usernameLogged) return;
-        let data = { username: usernameLogged };
+        let data = { username: usernameLogged, randomId: randomId };
         fetch("/logout", {
             method: "POST",
             headers: {
